@@ -49,3 +49,4 @@ cache
 artifacts
 .secret
 
+secrets.json
