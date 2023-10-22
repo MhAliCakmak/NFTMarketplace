@@ -1,12 +1,15 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
 import { Banner, CreatorCard, NFTCard } from '../components';
 
+import { NFTContext } from '../context/NFTContext';
 import images from '../assets';
 import { makeId } from '../utils/makeId';
 
 const Home = () => {
+  const { fetchNFTs } = useContext(NFTContext);
+  const [nfts, setNfts] = useState([]);
   const [hideButton, setHideButton] = useState(false);
   const parentRef = useRef();
   const [ids, setIds] = useState([]);
@@ -21,6 +24,9 @@ const Home = () => {
   };
   useEffect(() => {
     createId();
+    fetchNFTs().then((data) => {
+      setNfts(data);
+    });
   }, []);
   const handleScroll = (direction) => {
     const scroll = scrollRef.current;
@@ -74,9 +80,7 @@ const Home = () => {
                 key={`creator-${i}`}
                 rank={i}
                 creatorImage={images[`creator${i}`]}
-                creatorName={
-                  ids[i]
-                }
+                creatorName={ids[i]}
                 creatorEths={10 - i * 0.534}
               />
             ))}
@@ -119,26 +123,13 @@ const Home = () => {
             <h1 className="font-poppins dark:text-white text-nft-black-1 text-2xl minlg:text-4xl font-semibold  sm:mb-4 flex-1 ">
               Hot Bids
             </h1>
-            <div>
-              SearchBar
-            </div>
+
+            <div>SearchBar</div>
           </div>
           <div className="mt-3 w-full flex flex-wrap justify-start md:justify-center">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
-
-              <NFTCard
-                key={`nft-${i}`}
-                nft={{
-                  i,
-                  name: `Nifty NFT ${i}`,
-                  price: (10 - i * 0.5).toFixed(2),
-                  seller: `${ids[i]}`,
-                  owner: `${ids[i + 2]}`,
-                  description: 'Cool NFT on Sale',
-                }}
-              />
+            {nfts.map((nft) => (
+              <NFTCard key={nft.tokenId} nft={nft} />
             ))}
-
           </div>
         </div>
       </div>

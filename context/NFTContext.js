@@ -15,7 +15,7 @@ export const NFTContext = React.createContext();
 export const NFTProvider = ({ children }) => {
   const router = useRouter();
   const [currentAccount, setCurrentAccount] = useState('');
-  const nftCurrency = 'BNB';
+  const nftCurrency = 'tBNB';
 
   const checkIfWalletIsConnected = async () => {
     const { ethereum } = window;
@@ -54,20 +54,19 @@ export const NFTProvider = ({ children }) => {
 
   const uploadToIPFS = async (imageUrl, imgType, imgName, description) => {
     try {
-      console.log(imageUrl);
       const response = await axios.get(imageUrl, {
         responseType: 'arraybuffer',
       });
       const data = Buffer.from(response.data);
-      console.log(data, response);
+      // delete space for imgname
       const { ipnft } = await nftStorage.store({
         name: imgName,
         description,
-        image: new File([data], imgName, { type: imgType }),
+        image: new File([data], 'image', { type: imgType }),
       });
-      console.log(ipnft);
+
       const url = `https://ipfs.io/ipfs/${ipnft}/metadata.json`;
-      console.log(url);
+
       return url;
     } catch (error) {
       console.log('Error uploading file: ', error);
@@ -81,8 +80,11 @@ export const NFTProvider = ({ children }) => {
     const contract = new ethers.Contract(MarketAddress, MarketAbi, signer);
     const price = ethers.utils.parseUnits(formInputPrice, 'ether');
     const listingPrice = await contract.getListingPrice();
-    const transaction = await contract.createToken(url, price, { value: listingPrice.toString() });
+    const transaction = await contract.createToken(url, price, {
+      value: listingPrice.toString(),
+    });
     await transaction.wait();
+    router.push('/');
   };
 
   const createNFT = async (imageUrl, imgType, formInput) => {
@@ -94,18 +96,100 @@ export const NFTProvider = ({ children }) => {
     const fileUrl = uploadToIPFS(imageUrl, imgType, name, description);
     fileUrl.then((url) => {
       createSale(url, price);
-      router.push('/');
     });
   };
 
-  const fetcNFTs = async () => {
-    const provider = new ethers.providers.JsonRpcProvider();
-    const tokenContract = new ethers.Contract(MarketAddress, MarketAbi, provider);
+  const ipfsToHttps = (ipfsURL, image) => {
+    const urlParts = ipfsURL.split('/');
+    if (image) {
+      const cid = urlParts[2];
+      const httpsURL = `https://${cid}.ipfs.dweb.link/image`;
+      console.log(httpsURL);
+      return httpsURL;
+    }
+    const cid = urlParts[4];
+    const httpsURL = `https://${cid}.ipfs.dweb.link/metadata.json`;
+    return httpsURL;
+  };
+  const fetchNFTs = async () => {
+    const provider = new ethers.providers.JsonRpcProvider(
+      'https://data-seed-prebsc-1-s1.binance.org:8545/',
+    );
+    const tokenContract = new ethers.Contract(
+      MarketAddress,
+      MarketAbi,
+      provider,
+    );
     const data = await tokenContract.fetchMarketItems();
+    const allItems = [];
+    const items = await Promise.all(
+      data.map(async (i) => {
+        const tokenUri = await tokenContract.tokenURI(i.tokenId);
+        const httpsUri = ipfsToHttps(tokenUri);
+        const meta = await axios.get(httpsUri);
+
+        const price = ethers.utils.formatUnits(i.price.toString(), 'ether');
+        const item = {
+          price,
+          tokenId: i.tokenId.toNumber(),
+          seller: i.seller,
+          owner: i.owner,
+          image: ipfsToHttps(meta.data.image, true),
+          name: meta.data.name,
+          description: meta.data.description,
+        };
+
+        allItems.push(item);
+      }),
+    );
+    return allItems;
+  };
+
+  const fetchMyNFTOrListedNFTs = async (type) => {
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(MarketAddress, MarketAbi, signer);
+
+    const data = type === 'fetchItemsListed'
+      ? await contract.fetchItemsListed()
+      : await contract.fetchMyNFTs();
+    const allItems = [];
+    console.log(data);
+    const items = await Promise.all(
+      data.map(async (i) => {
+        const tokenUri = await contract.tokenURI(i.tokenId);
+        const httpsUri = ipfsToHttps(tokenUri);
+        const meta = await axios.get(httpsUri);
+
+        const price = ethers.utils.formatUnits(i.price.toString(), 'ether');
+        const item = {
+          price,
+          tokenId: i.tokenId.toNumber(),
+          seller: i.seller,
+          owner: i.owner,
+          image: ipfsToHttps(meta.data.image, true),
+          name: meta.data.name,
+          description: meta.data.description,
+        };
+
+        allItems.push(item);
+      }),
+    );
+    console.log(allItems);
+    return allItems;
   };
   return (
     <NFTContext.Provider
-      value={{ nftCurrency, connectWallet, currentAccount, createNFT }}
+      value={{
+        nftCurrency,
+        connectWallet,
+        currentAccount,
+        createNFT,
+        fetchNFTs,
+        fetchMyNFTOrListedNFTs,
+      }}
     >
       {children}
     </NFTContext.Provider>

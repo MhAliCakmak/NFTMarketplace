@@ -28,13 +28,13 @@ const ButtonGroup = ({ setActive, router }) => {
     />
   );
 };
-const MenuItems = ({ isMobile, active, setActive }) => {
+const MenuItems = ({ isMobile, active, setActive, setIsOpen }) => {
   const generateLink = (index) => {
     switch (index) {
       case 0:
         return '/';
       case 1:
-        return '/created-nfts';
+        return '/listed-nfts';
       case 2:
         return '/my-nfts';
       default:
@@ -57,7 +57,7 @@ const MenuItems = ({ isMobile, active, setActive }) => {
               : 'dark:text-nft-gray-3 text-nft-gray-2'
           }`}
         >
-          <Link href={generateLink(index)}>{item}</Link>
+          <Link onClick={() => setIsOpen(false)} href={generateLink(index)}>{item}</Link>
         </li>
       ))}
     </ul>
@@ -158,7 +158,7 @@ const Navbar = () => {
           {isOpen && (
             <div className="fixed inset-0 top-65 dark:bg-nft-dark bg-white z-10 nav-h flex justify-between flex-col">
               <div className="flex-1 p-4">
-                <MenuItems active={active} setActive={setActive} isMobile />
+                <MenuItems active={active} setActive={setActive} setIsOpen={setIsOpen} isMobile />
               </div>
               <div className="p-4 border-t dark:border-nft-black-1 border-nft-gray-1">
                 <ButtonGroup router={router} setActive={setActive} />
