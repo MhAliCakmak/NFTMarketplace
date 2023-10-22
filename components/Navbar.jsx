@@ -8,7 +8,7 @@ import { NFTContext } from '../context/NFTContext';
 
 import images from '../assets';
 
-const ButtonGroup = ({ setActive, router }) => {
+const ButtonGroup = ({ setActive, router, setIsOpen }) => {
   const { connectWallet, currentAccount } = useContext(NFTContext);
 
   return currentAccount ? (
@@ -18,6 +18,7 @@ const ButtonGroup = ({ setActive, router }) => {
       handleClick={() => {
         setActive('');
         router.push('/create-nft');
+        setIsOpen(false);
       }}
     />
   ) : (
@@ -126,7 +127,7 @@ const Navbar = () => {
         <div className="md:hidden flex">
           <MenuItems active={active} setActive={setActive} />
           <div className="ml-4">
-            <ButtonGroup router={router} setActive={setActive} />
+            <ButtonGroup router={router} setIsOpen={setIsOpen} setActive={setActive} />
           </div>
         </div>
         <div className="hidden md:flex  ml-2 ">
@@ -161,7 +162,7 @@ const Navbar = () => {
                 <MenuItems active={active} setActive={setActive} setIsOpen={setIsOpen} isMobile />
               </div>
               <div className="p-4 border-t dark:border-nft-black-1 border-nft-gray-1">
-                <ButtonGroup router={router} setActive={setActive} />
+                <ButtonGroup router={router} setIsOpen={setIsOpen} setActive={setActive} />
               </div>
             </div>
           )}
