@@ -12,7 +12,7 @@ const MyNFTs = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { fetchMyNFTOrListedNFTs, currentAccount } = useContext(NFTContext);
   useEffect(() => {
-    fetchMyNFTOrListedNFTs('fetchItemsListed').then((data) => {
+    fetchMyNFTOrListedNFTs().then((data) => {
       setNfts(data);
       setIsLoading(false);
     });
@@ -58,7 +58,7 @@ const MyNFTs = () => {
           </div>
           <div className="flex flex-wrap justify-center">
             {nfts.map((nft) => (
-              <NFTCard nft={nft} key={nft.tokenId} />
+              <NFTCard nft={nft} key={nft.tokenId} onProfilePage />
             ))}
           </div>
         </div>

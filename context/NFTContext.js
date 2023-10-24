@@ -172,6 +172,7 @@ export const NFTProvider = ({ children }) => {
           image: ipfsToHttps(meta.data.image, true),
           name: meta.data.name,
           description: meta.data.description,
+          tokenURI: httpsUri,
         };
 
         allItems.push(item);
@@ -179,6 +180,21 @@ export const NFTProvider = ({ children }) => {
     );
     console.log(allItems);
     return allItems;
+  };
+
+  const buyNFT = async (nft) => {
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(MarketAddress, MarketAbi, signer);
+    const price = ethers.utils.parseUnits(nft.price.toString(), 'ether');
+
+    const transaction = await contract.createMarketSale(
+      nft.tokenId,
+      { value: price },
+    );
+    await transaction.wait();
   };
   return (
     <NFTContext.Provider
@@ -189,6 +205,7 @@ export const NFTProvider = ({ children }) => {
         createNFT,
         fetchNFTs,
         fetchMyNFTOrListedNFTs,
+        buyNFT,
       }}
     >
       {children}
