@@ -1,3 +1,4 @@
+![banner](./assets/image.png)
 # CryptoKet NFT Marketplace
 
 Welcome to the Testbnb NFT Marketplace repository! This repository contains the smart contracts and codebase for Testbnb, an Ethereum-based NFT marketplace where you can buy and sell non-fungible tokens.
