@@ -14,6 +14,7 @@ export const NFTContext = React.createContext();
 
 export const NFTProvider = ({ children }) => {
   const router = useRouter();
+  const [isLoadingNFT, setIsLoadingNFT] = useState(false);
   const [currentAccount, setCurrentAccount] = useState('');
   const nftCurrency = 'tBNB';
 
@@ -72,7 +73,7 @@ export const NFTProvider = ({ children }) => {
       console.log('Error uploading file: ', error);
     }
   };
-  const createSale = async (url, formInputPrice) => {
+  const createSale = async (url, formInputPrice, isReselling, id) => {
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
@@ -80,9 +81,14 @@ export const NFTProvider = ({ children }) => {
     const contract = new ethers.Contract(MarketAddress, MarketAbi, signer);
     const price = ethers.utils.parseUnits(formInputPrice, 'ether');
     const listingPrice = await contract.getListingPrice();
-    const transaction = await contract.createToken(url, price, {
-      value: listingPrice.toString(),
-    });
+    const transaction = !isReselling
+      ? await contract.createToken(url, price, {
+        value: listingPrice.toString(),
+      })
+      : await contract.resellToken(id, price, {
+        value: listingPrice.toString(),
+      });
+    setIsLoadingNFT(true);
     await transaction.wait();
     router.push('/');
   };
@@ -146,6 +152,7 @@ export const NFTProvider = ({ children }) => {
   };
 
   const fetchMyNFTOrListedNFTs = async (type) => {
+    setIsLoadingNFT(false);
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
@@ -172,7 +179,7 @@ export const NFTProvider = ({ children }) => {
           image: ipfsToHttps(meta.data.image, true),
           name: meta.data.name,
           description: meta.data.description,
-          tokenURI: httpsUri,
+          tokenURI: tokenUri,
         };
 
         allItems.push(item);
@@ -190,10 +197,9 @@ export const NFTProvider = ({ children }) => {
     const contract = new ethers.Contract(MarketAddress, MarketAbi, signer);
     const price = ethers.utils.parseUnits(nft.price.toString(), 'ether');
 
-    const transaction = await contract.createMarketSale(
-      nft.tokenId,
-      { value: price },
-    );
+    const transaction = await contract.createMarketSale(nft.tokenId, {
+      value: price,
+    });
     await transaction.wait();
   };
   return (
@@ -203,9 +209,11 @@ export const NFTProvider = ({ children }) => {
         connectWallet,
         currentAccount,
         createNFT,
+        createSale,
         fetchNFTs,
         fetchMyNFTOrListedNFTs,
         buyNFT,
+        isLoadingNFT,
       }}
     >
       {children}
