@@ -6,7 +6,7 @@ import images from '../assets';
 const CreatorCard = ({ rank, creatorImage, creatorName, creatorEths }) => {
   const { nftCurrency } = useContext(NFTContext);
   return (
-    <div className="min-w-190 minlg:min-w-240 dark:bg-nft-black-3 bg-white border dark:border-nft-black-3 border-nft-gray-1 rounded-3xl flex flex-col p-4 m-4">
+    <div className="min-w-190 minlg:min-w-240 hover:opacity-80 hover:scale-105 dark:bg-nft-black-3 bg-white border dark:border-nft-black-3 border-nft-gray-1 rounded-3xl flex flex-col p-4 m-4">
       <div className="w-8 h-8 minlg:w-10 minlg:h-10 bg-nft-red-violet flexCenter rounded-full">
         <p className="font-poppins text-white font-semibold text-base minlg:text-lg">{rank}</p>
       </div>
