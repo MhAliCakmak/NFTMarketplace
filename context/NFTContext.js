@@ -22,7 +22,6 @@ export const NFTProvider = ({ children }) => {
     const { ethereum } = window;
 
     if (!ethereum) {
-      alert('Make sure you have metamask!');
       return;
     }
     console.log('We have the ethereum object', ethereum);
@@ -45,7 +44,6 @@ export const NFTProvider = ({ children }) => {
     const { ethereum } = window;
 
     if (!ethereum) {
-      alert('Make sure you have metamask!');
       return;
     }
     const accounts = await ethereum.request({ method: 'eth_accounts' });
@@ -200,7 +198,9 @@ export const NFTProvider = ({ children }) => {
     const transaction = await contract.createMarketSale(nft.tokenId, {
       value: price,
     });
+    setIsLoadingNFT(true);
     await transaction.wait();
+    setIsLoadingNFT(false);
   };
   return (
     <NFTContext.Provider

@@ -19,7 +19,8 @@ const CreateNFT = () => {
     name: '',
     description: '',
   });
-  const { createNFT } = useContext(NFTContext);
+
+  const { createNFT, isLoadingNFT } = useContext(NFTContext);
 
   const onImageChange = (event) => {
     const { type, name } = event.target.files[0];
