@@ -151,7 +151,7 @@ export const NFTProvider = ({ children }) => {
     return allItems;
   };
 
-  const fetchMyNFTOrListedNFTs = async (type) => {
+  const fetchMyNFTsOrCreatedNFTs = async (type) => {
     setIsLoadingNFT(false);
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
@@ -211,7 +211,7 @@ export const NFTProvider = ({ children }) => {
         createNFT,
         createSale,
         fetchNFTs,
-        fetchMyNFTOrListedNFTs,
+        fetchMyNFTsOrCreatedNFTs,
         buyNFT,
         isLoadingNFT,
       }}
