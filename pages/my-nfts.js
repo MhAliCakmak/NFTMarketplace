@@ -86,7 +86,7 @@ const MyNFTs = () => {
           </p>
         </div>
       </div>
-      {!isLoading && nfts.length === 0 ? (
+      {!isLoading && nfts?.length === 0 ? (
         <div className="flexCenter sm:p-4 p-16">
           <h1 className="font-poppins dark:text-white text-nft-black-1 text-3xl font-extrabold">
             No NFTs owned
@@ -98,7 +98,7 @@ const MyNFTs = () => {
             <SearchBar activeSelect={activeSelect} setActiveSelect={setActiveSelect} handleSearch={onHandleSearch} clearSearch={onClearSearch} />
           </div>
           <div className="mt-3 w-full flex flex-wrap">
-            {nfts.map((nft) => <NFTCard key={`nft-${nft.tokenId}`} nft={nft} onProfilePage />)}
+            {nfts?.map((nft) => <NFTCard key={`nft-${nft.tokenId}`} nft={nft} onProfilePage />)}
           </div>
         </div>
       )}
