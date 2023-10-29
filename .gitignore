@@ -36,7 +36,7 @@ yarn-error.log*
 next-env.d.ts
 .eslintrc.js
 .eslintrc.js
-
+postcss.config.js
 
 node_modules
 .env
