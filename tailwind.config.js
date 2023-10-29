@@ -1,11 +1,9 @@
-/** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
+  purge: [
+    './pages/**/*.{js,ts,jsx,tsx}',
+    './components/**/*.{js,ts,jsx,tsx}',
   ],
-  darkMode: 'class',
+  darkMode: 'class', // or 'media' or 'class'
   theme: {
     extend: {
       colors: {
@@ -58,17 +56,17 @@ module.exports = {
         '-5': '-5',
         0: '0',
       },
-      screens: {
-        lg: { max: '1800px' },
-        md: { max: '990px' },
-        sm: { max: '600px' },
-        xs: { max: '400px' },
-        minmd: '1700px',
-        minlg: '2100px',
-      },
-      fontFamily: {
-        poppins: ['Poppins', 'sans-serif'],
-      },
+    },
+    screens: {
+      lg: { max: '1800px' },
+      md: { max: '990px' },
+      sm: { max: '600px' },
+      xs: { max: '400px' },
+      minmd: '1700px',
+      minlg: '2100px',
+    },
+    fontFamily: {
+      poppins: ['Poppins', 'sans-serif'],
     },
   },
   variants: {

@@ -1,9 +1,6 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+module.exports = {
+  reactStrictMode: true,
   images: {
-    domains: ['ipfs.io', 'gateway.pinata.cloud'],
+    domains: ['ipfs.infura.io'],
   },
-  output: 'export',
 };
-
-module.exports = nextConfig;
