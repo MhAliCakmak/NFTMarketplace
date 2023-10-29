@@ -13,7 +13,6 @@ const ResellNFT = () => {
 
   const fetchNFT = async () => {
     setImage(img);
-    console.log(image);
   };
 
   useEffect(() => {

@@ -50,16 +50,12 @@ export const NFTProvider = ({ children }) => {
       }
     }
 
-    console.log('We have the ethereum object', ethereum);
-
     const accounts = await ethereum.request({ method: 'eth_accounts' });
 
     if (accounts.length !== 0) {
       const account = accounts[0];
-      console.log('Found an authorized account:', account);
+
       setCurrentAccount(account);
-    } else {
-      console.log('No authorized account found');
     }
   };
   useEffect(() => {
@@ -146,7 +142,6 @@ export const NFTProvider = ({ children }) => {
     if (image) {
       const cid = urlParts[2];
       const httpsURL = `https://${cid}.ipfs.dweb.link/image`;
-      console.log(httpsURL);
       return httpsURL;
     }
     const cid = urlParts[4];
@@ -200,7 +195,6 @@ export const NFTProvider = ({ children }) => {
         ? await contract.fetchItemsListed()
         : await contract.fetchMyNFTs();
       const allItems = [];
-      console.log(data);
       const items = await Promise.all(
         data.map(async (i) => {
           const tokenUri = await contract.tokenURI(i.tokenId);
@@ -222,7 +216,6 @@ export const NFTProvider = ({ children }) => {
           allItems.push(item);
         }),
       );
-      console.log(allItems);
       return allItems;
     } catch (error) {
       alert(error);
