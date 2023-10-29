@@ -6,7 +6,6 @@ import { getCreators } from '../utils/getTopCreators';
 
 import { NFTContext } from '../context/NFTContext';
 import images from '../assets';
-import { makeId } from '../utils/makeId';
 import { shortenAddress } from '../utils/shortenAddress';
 
 const Home = () => {

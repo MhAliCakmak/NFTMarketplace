@@ -1,7 +1,7 @@
 import { ThemeProvider } from 'next-themes';
 import Script from 'next/script';
 import { Navbar, Footer } from '../components';
-import '../styles/globals.css';
+import '../styles/global.css';
 import { NFTProvider } from '../context/NFTContext';
 
 const App = ({ Component, pageProps }) => (
