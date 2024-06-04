@@ -12,7 +12,7 @@ const Home = () => {
   const { fetchNFTs } = useContext(NFTContext);
   const [nfts, setNfts] = useState([]);
   const [nftsCopy, setNftsCopy] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [hideButton, setHideButton] = useState(false);
   const [activeSelect, setActiveSelect] = useState('Recently Added');
   const parentRef = useRef();
